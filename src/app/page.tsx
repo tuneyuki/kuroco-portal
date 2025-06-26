@@ -1,103 +1,147 @@
-import Image from "next/image";
+import { BookOpenIcon, NewspaperIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { Card } from './components/Card';
 
-export default function Home() {
+
+type TutorialItem = {
+  topics_id: number;
+  subject: string;
+  contents: string;
+  ymd: string;
+  ext_1?: {
+    url: string;
+    desc?: string;
+  };
+};
+
+async function fetchTutorials(): Promise<TutorialItem[]> {
+  const res = await fetch(`${process.env.KUROCO_BASE_URL}/rcms-api/3/tutorial/list`, {
+    next: { revalidate: 60 },
+    headers: {
+      Accept: '*/*',
+      'X-RCMS-API-ACCESS-TOKEN': process.env.KUROCO_API_TOKEN || '',
+    },
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch tutorials')
+  }
+
+  const data = await res.json()
+  return data.list
+}
+
+const blogs = [
+  {
+    id: 1,
+    title: 'Boost your conversion rate',
+    href: '#',
+    description:
+      'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde.',
+    date: 'Mar 16, 2020',
+    datetime: '2020-03-16',
+    category: { title: 'Marketing', href: '#' },
+    author: {
+      name: 'Michael Foster',
+      role: 'Co-Founder / CTO',
+      href: '#',
+      imageUrl:
+        'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    },
+  },
+  // 2,3件も同様に用意してください
+]
+
+const news = [
+  {
+    id: 1,
+    title: 'New feature released',
+    href: '#',
+    description: 'We just released a new feature to improve your experience.',
+    date: 'Jun 1, 2025',
+    datetime: '2025-06-01',
+  },
+  // 2,3件も同様に用意してください
+]
+
+export default async function Home() {
+  const tutorials = (await fetchTutorials()).slice(0, 3)
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 px-6 py-12 lg:px-24">
+      <h1 className="mb-12 text-4xl font-bold text-gray-900 dark:text-white">Welcome to MyPortal</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* Tutorials */}
+      <section className="mb-16">
+        <h2 className="mb-6 text-3xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <BookOpenIcon className="h-8 w-8 text-indigo-600" />
+          Tutorials
+        </h2>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {tutorials.map((tut) => (
+            <Card
+              key={tut.topics_id}
+              title={tut.subject}
+              href={`/tutorials/${tut.topics_id}`}
+              description={tut.contents.replace(/<[^>]+>/g, '').slice(0, 100) + (tut.contents.length > 100 ? '...' : '')}
+              date={tut.ymd}
+              datetime={tut.ymd}
+              icon={
+                <img
+                  src={tut.ext_1?.url || '/placeholder.jpg'}
+                  alt="Tutorial thumbnail"
+                  className="w-full h-full object-cover rounded-none"
+                />
+              }
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+
+      {/* Blogs */}
+      <section className="mb-16">
+        <h2 className="mb-6 text-3xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <NewspaperIcon className="h-8 w-8 text-indigo-600" />
+          Blogs
+        </h2>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {blogs.map((blog) => (
+            <Card
+              key={blog.id}
+              title={blog.title}
+              href={blog.href}
+              description={blog.description}
+              date={blog.date}
+              datetime={blog.datetime}
+              categoryTitle={blog.category.title}
+              categoryHref={blog.category.href}
+              author={blog.author}
+              icon={<NewspaperIcon />}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* News */}
+      <section>
+        <h2 className="mb-6 text-3xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <SparklesIcon className="h-8 w-8 text-indigo-600" />
+          News
+        </h2>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {news.map((n) => (
+            <Card
+              key={n.id}
+              title={n.title}
+              href={n.href}
+              description={n.description}
+              date={n.date}
+              datetime={n.datetime}
+              icon={<SparklesIcon />}
+            />
+          ))}
+        </div>
+      </section>
     </div>
-  );
+  )
 }
