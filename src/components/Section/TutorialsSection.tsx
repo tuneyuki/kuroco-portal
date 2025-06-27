@@ -7,7 +7,7 @@ export default async function TutorialsSection() {
   const tutorials = (await fetchTutorialsList()).slice(0, 3);
 
   return (
-    <section className="mb-16">
+    <section className="mt-16">
       <SectionHeading icon={<BookOpenIcon className="h-8 w-8 text-red-300" />} label="Tutorials" />
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
         {tutorials.map((tut) => (
