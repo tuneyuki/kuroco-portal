@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
 :root {
   --background: #ffffff;
@@ -8,8 +9,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,7 +28,6 @@ h1 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: var(--foreground);
 }
 
 h2 {
@@ -41,7 +39,6 @@ h2 {
 p {
   margin-bottom: 1rem;
   line-height: 1.7;
-  color: var(--foreground);
 }
 
 ul {
@@ -67,7 +64,7 @@ li {
 
 li::marker {
   font-size: 2.25rem;  /* ボッチを大きく */
-  color: #4f46e5;      /* indigo-600（お好みで） */
+  color: #726fb8;      /* indigo-600（お好みで） */
 }
 
 pre {
