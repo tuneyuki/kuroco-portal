@@ -2,6 +2,7 @@ import Menu from '@/components/Menu/Menu';
 import TutorialsSection from '@/components/Section/TutorialsSection';
 import BlogsSection from '@/components/Section/BlogsSection';
 import NewsSection from '@/components/Section/NewsSection';
+import DaisiuiSection from '@/components/Section/DaisyuiSection';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <TutorialsSection />
       <BlogsSection />
       <NewsSection />
+      <DaisiuiSection />
     </main>
   );
 }
